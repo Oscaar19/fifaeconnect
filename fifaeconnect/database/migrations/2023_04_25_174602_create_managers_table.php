@@ -12,15 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('managers', function (Blueprint $table) {
-            $table->id('id_manager');
-            $table->string('foto');
-            $table->json('xarxes_socials');
-            $table->unsignedBigInteger('club_actual');
-            $table->boolean('fa');
-            $table->foreign('club_actual')
-                    ->references('id_club')->on('clubs')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
+            $table->id('id_manager');            
             $table->foreign('id_manager')
                     ->references('id_usuari')->on('usuaris')
                     ->onUpdate('cascade')

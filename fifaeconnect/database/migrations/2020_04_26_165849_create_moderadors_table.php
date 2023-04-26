@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assoliments', function (Blueprint $table) {
-            $table->id('id_assoliment');
-            $table->json('descripcio');
+        Schema::create('moderadors', function (Blueprint $table) {
+            $table->id('id_moderador');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken()->nullable();
         });
     }
 
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assoliments');
+        Schema::dropIfExists('moderadors');
     }
 };

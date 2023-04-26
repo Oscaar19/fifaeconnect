@@ -14,13 +14,8 @@ return new class extends Migration
         Schema::create('entrenadors', function (Blueprint $table) {
             $table->id('id_entrenador');
             $table->unsignedBigInteger('id_experiencia');
-            $table->foreign('id_experiencia')->references('id_experiencia')->on('experiencies');
-            $table->boolean('fa');
-            $table->string('foto');
-            $table->json('xarxes_socials');
-            $table->unsignedBigInteger('club_actual');
-            $table->foreign('club_actual')
-                    ->references('id_club')->on('clubs')
+            $table->foreign('id_experiencia')
+                    ->references('id_experiencia')->on('experiencies')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->foreign('id_entrenador')
