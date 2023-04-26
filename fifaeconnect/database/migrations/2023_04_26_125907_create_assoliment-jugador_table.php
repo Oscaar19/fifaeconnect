@@ -11,21 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jugadors', function (Blueprint $table) {
-            $table->id('id_jugador');
-            $table->string('foto');
-            $table->json('xarxes_socials');
-            $table->boolean('fa');
-            $table->unsignedBigInteger('club_actual');
-            $table->foreign('club_actual')
-                    ->references('id_club')->on('clubs')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
+        Schema::create('assoliment-jugador', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_jugador');
             $table->foreign('id_jugador')
-                    ->references('id_usuari')->on('usuaris')
+                    ->references('id_jugador')->on('jugadors')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->unsignedBigInteger('id_assoliment');
+            $table->foreign('id_assoliment')
+                    ->references('id_assoliment')->on('assoliments')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->unique(['id_jugador', 'id_assoliment']);
         });
+        
     }
 
     /**
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jugadors');
+        Schema::dropIfExists('assoliment-jugador');
     }
 };

@@ -19,8 +19,14 @@ return new class extends Migration
             $table->string('foto');
             $table->json('xarxes_socials');
             $table->unsignedBigInteger('club_actual');
-            $table->foreign('club_actual')->references('id_club')->on('clubs');
-            $table->foreign('id_entrenador')->references('id_usuari')->on('usuaris');
+            $table->foreign('club_actual')
+                    ->references('id_club')->on('clubs')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->foreign('id_entrenador')
+                    ->references('id_usuari')->on('usuaris')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

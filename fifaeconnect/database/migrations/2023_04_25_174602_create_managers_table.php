@@ -17,8 +17,14 @@ return new class extends Migration
             $table->json('xarxes_socials');
             $table->unsignedBigInteger('club_actual');
             $table->boolean('fa');
-            $table->foreign('club_actual')->references('id_club')->on('clubs');
-            $table->foreign('id_manager')->references('id_usuari')->on('usuaris');
+            $table->foreign('club_actual')
+                    ->references('id_club')->on('clubs')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->foreign('id_manager')
+                    ->references('id_usuari')->on('usuaris')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

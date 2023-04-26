@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('trajectories', function (Blueprint $table) {
             $table->id('id_trajectoria');
             $table->unsignedBigInteger('id_jugador');
-            $table->foreign('id_jugador')->references('id_jugador')->on('jugadors');
+            $table->foreign('id_jugador')
+                    ->references('id_jugador')->on('jugadors')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 
