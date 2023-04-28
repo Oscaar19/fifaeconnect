@@ -22,6 +22,11 @@ return new class extends Migration
                     ->references('id_moderador')->on('moderadors')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->unsignedBigInteger('club_actual');
+            $table->foreign('club_actual')
+                    ->references('id_club')->on('clubs')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

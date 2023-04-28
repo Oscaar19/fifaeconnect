@@ -19,13 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken()->nullable();
             $table->string('foto');
-            $table->json('xarxes_socials');
             $table->boolean('fa');
-            $table->unsignedBigInteger('club_actual');
-            $table->foreign('club_actual')
-                    ->references('id_club')->on('clubs')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
+            
         });
     }
 

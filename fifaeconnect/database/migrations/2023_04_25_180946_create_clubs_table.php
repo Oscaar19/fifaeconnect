@@ -14,8 +14,14 @@ return new class extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->id('id_club');
             $table->string('nom');
-            $table->json('xarxes_socials');
-            $table->string('foto');
+            $table->unsignedBigInteger('id_foto');
+            $table->foreign('id_foto')
+                    ->references('id_foto')->on('fotos');
+            $table->unsignedBigInteger('id_manager');
+            $table->foreign('id_manager')
+                    ->references('id_manager')->on('managers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 
