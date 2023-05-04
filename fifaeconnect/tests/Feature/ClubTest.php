@@ -52,6 +52,26 @@ class ClubTest extends TestCase
 
     }
 
+    public function test_club_create() : object
+    {
+        // Cridar servei web de l'API
+        $response = $this->postJson("/api/clubs", self::$validData);
+        // Revisar que no hi ha errors de validació
+        $params = array_keys(self::$validData);
+        $response->assertValid($params);
+                
+        // Check OK response
+        $this->_test_ok($response, 201);
+    
+        // Check JSON dynamic values
+        $response->assertJsonPath("data.id",
+            fn ($id) => !empty($id)
+        );
+        // Read, update and delete dependency!!!
+        $json = $response->getData();
+        return $json->data;
+    }
+
     protected function _test_ok($response, $status = 200)
     {
         // Check JSON response
