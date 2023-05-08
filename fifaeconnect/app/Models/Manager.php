@@ -23,4 +23,10 @@ class Manager extends Model
     protected $fillable = [
         'usuari',
     ];
+
+    public function club()
+    {
+        return $this->hasOne(Club::class);
+    }
+
 }

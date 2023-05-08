@@ -79,7 +79,31 @@ class ManagerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $manager=Manager::where('id_manager', '=',$id)->first();
+
+        if ($manager){
+            // Validar dades del formulari
+            $validatedData = $request->validate([
+                'usuari'     => 'required',
+            ]);
+            
+            // Obtenir dades del formulari
+            $usuari = $request->get('usuari');         
+
+            $manager->usuari = $usuari;
+            $manager->save();
+            // Patró PRG amb missatge d'èxit
+            return response()->json([
+                'success' => true,
+                'data'    => $manager
+            ], 201);             
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => "Manager no trobat"
+            ], 404);
+           
+        }
     }
 
     /**
@@ -87,6 +111,20 @@ class ManagerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $manager=Manager::where('id_manager', '=',$id)->first();
+        if (!$manager){
+            return response()->json([
+                'success' => false,
+                'message' => "Manager no trobat"
+            ], 404);
+        }
+        else{
+            $manager->delete();
+            return response()->json([
+                'success' => true,
+                'data'    => 'Manager esborrat.'
+            ], 200);
+       
+        }
     }
 }

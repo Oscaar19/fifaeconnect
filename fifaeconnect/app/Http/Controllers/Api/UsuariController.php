@@ -106,7 +106,7 @@ class UsuariController extends Controller
             // Validar dades del formulari
             $validatedData = $request->validate([
                 'nom'        => 'required|string',
-                'cognom'     => 'required|string',
+                'cognom'     => 'string',
                 'email'      => 'required|string',
                 'password'   => 'required|string',
                 'fa'         => 'boolean',
@@ -173,8 +173,8 @@ class UsuariController extends Controller
             ], 404);
         }
         else{
-            $user->foto->diskDelete();
             $user->delete();
+            $user->fotoFK->diskDelete();
             return response()->json([
                 'success' => true,
                 'data'    => 'Usuari esborrat.'

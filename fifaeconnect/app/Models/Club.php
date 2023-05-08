@@ -18,7 +18,7 @@ class Club extends Model
     protected $fillable = [
         'nom',
         'foto',
-        'id_manager',
+        'manager',
     ];
 
     public function user()
@@ -26,8 +26,13 @@ class Club extends Model
         return $this->hasMany(User::class);
     }
 
-    public function foto()
+    public function fotoFK()
     {
-        return $this->belongsTo(Foto::class);
+        return $this->belongsTo(Foto::class,'foto');
+    }
+
+    public function managerFK()
+    {
+        return $this->belongsTo(Manager::class,'manager');
     }
 }

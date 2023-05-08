@@ -51,7 +51,7 @@ class ClubController extends Controller
             // Desar dades a BD
             $club = Club::create([
                 'nom'        => $nom,
-                'foto'       => $foto->id,
+                'foto'       => $foto->id_foto,
                 'manager'    => $manager,
             ]);
             // Patró PRG amb missatge d'èxit
@@ -158,8 +158,8 @@ class ClubController extends Controller
             ], 404);
         }
         else{
-            $club->foto->diskDelete();
             $club->delete();
+            $club->fotoFK->diskDelete();
             return response()->json([
                 'success' => true,
                 'data'    => 'Club esborrat.'
