@@ -35,7 +35,7 @@ class UsuariController extends Controller
             'email'      => 'required|string',
             'password'   => 'required|string',
             'fa'         => 'boolean',
-            'foto'       => 'required|mimes:gif,jpeg,jpg,png,mp4|max:2048',
+            'foto'       => 'mimes:gif,jpeg,jpg,png,mp4|max:2048',
         ]);
 
         Log::debug("He validado los datos");

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\UsuariController;
 use App\Http\Controllers\Api\ManagerController;
 use App\Http\Controllers\Api\FotoController;
 use App\Http\Controllers\Api\JugadorController;
+use App\Http\Controllers\Api\TokenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +36,11 @@ Route::apiResource('jugadors', JugadorController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/register', [TokenController::class, 'register']);
+
+Route::post('/login', [TokenController::class, 'login']);
+
+Route::post('/logout', [TokenController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::get('/user', [TokenController::class, 'user'])->middleware('auth:sanctum');
