@@ -20,7 +20,7 @@ class ClubTest extends TestCase
     public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
-        
+        Log::debug("Empiezo a crear la foto fake");
         // Create fake file
         $name  = "avatar.png";
         $size = 500; /*KB*/
@@ -40,6 +40,7 @@ class ClubTest extends TestCase
 
     public function test_club_list()
     {
+        Log::debug("Entro al test de listar");
         // List all files using API web service
         $response = $this->getJson("/api/clubs");
         // Check OK response
@@ -48,6 +49,7 @@ class ClubTest extends TestCase
         $response->assertJsonPath("data",
             fn ($data) => is_array($data)
         );
+        Log::debug("Salgo del test de listar");
 
 
     }

@@ -18,6 +18,13 @@ return new class extends Migration
                     ->references('id_jugador')->on('jugadors')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->unsignedBigInteger('club')->nullable();
+            $table->foreign('club')
+                    ->references('id_club')->on('clubs')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->year('any_inici');
+            $table->year('any_final');
         });
     }
 

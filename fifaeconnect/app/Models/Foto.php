@@ -13,6 +13,12 @@ class Foto extends Model
 {
     use HasFactory;
 
+    //protected $primary_key = 'id_foto';
+
+    public function getKeyName(){
+        return "id_foto";
+    }
+
     protected $fillable = [
         'ruta',
         'tamany',
@@ -26,26 +32,26 @@ class Foto extends Model
     public function diskSave(UploadedFile $upload)
     {
         $fotoName = $upload->getClientOriginalName();
-        $fotoSize = $upload->getSize();
-        Log::debug("Storing file '{$fotoName}' ($fotoSize)...");
+        $tamany = $upload->getSize();
+        Log::debug("Storing file '{$fotoName}' ($tamany)...");
         
         // Store file at disk
         $uploadName = time() . '_' . $fotoName;
-        $fotoPath = $upload->storeAs(
+        $ruta = $upload->storeAs(
             'uploads',      // Path
             $uploadName ,   // Filename
             'public'        // Disk
         );
         
-        $stored = Storage::disk('public')->exists($fotoPath);
+        $stored = Storage::disk('public')->exists($ruta);
 
         if ($stored) {
             Log::debug("Disk storage OK");
-            $fullPath = Storage::disk('public')->path($fotoPath);
+            $fullPath = Storage::disk('public')->path($ruta);
             Log::debug("File saved at {$fullPath}");
             // Update model properties
-            $this->fotoPath = $fotoPath;
-            $this->fotoSize = $fotoSize;
+            $this->ruta = $ruta;
+            $this->tamany = $tamany;
             $this->save();
             Log::debug("DB storage OK");
             return true;
@@ -57,8 +63,8 @@ class Foto extends Model
 
     public function diskDelete()
     {
-        Log::debug("Deleting file '{$this->id}'...");
-        Storage::disk('public')->delete($this->fotopath);
+        Log::debug("Deleting foto '{$this->id}'...");
+        Storage::disk('public')->delete($this->ruta);
         Log::debug("Disk storage OK");
         $this->delete();
         Log::debug("DB storage OK");

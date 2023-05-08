@@ -9,9 +9,16 @@ class Club extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    public function getKeyName(){
+        return "id_club";
+    }
+
     protected $fillable = [
         'nom',
-        'id_foto',
+        'foto',
+        'id_manager',
     ];
 
     public function user()
@@ -19,8 +26,8 @@ class Club extends Model
         return $this->hasMany(User::class);
     }
 
-    public function file()
+    public function foto()
     {
-        return $this->belongsTo(File::class);
+        return $this->belongsTo(Foto::class);
     }
 }

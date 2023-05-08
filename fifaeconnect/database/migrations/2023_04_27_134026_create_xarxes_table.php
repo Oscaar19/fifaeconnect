@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_xarxa');
             $table->unsignedBigInteger('id_usuari');     
             $table->foreign('id_usuari')
-                    ->references('id_usuari')->on('usuaris')
+                    ->references('id_usuari')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('link');

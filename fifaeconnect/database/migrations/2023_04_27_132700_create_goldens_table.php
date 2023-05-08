@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('goldens', function (Blueprint $table) {
             $table->unsignedBigInteger('id_valorador');            
             $table->foreign('id_valorador')
-                    ->references('id_usuari')->on('usuaris')
+                    ->references('id_usuari')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->unsignedBigInteger('id_valorat');            
             $table->foreign('id_valorat')
-                    ->references('id_usuari')->on('usuaris')
+                    ->references('id_usuari')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->unique(['id_valorador', 'id_valorat']);
