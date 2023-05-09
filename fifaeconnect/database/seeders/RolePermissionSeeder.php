@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -21,5 +22,9 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'users.delete']);
 
         $moderadorRole->givePermissionTo(['users.list','users.delete']);
+
+        $name  = config('admin.name');
+        $admin = User::where('nom', $name)->first();
+        $admin->assignRole('moderador');
     }
 }

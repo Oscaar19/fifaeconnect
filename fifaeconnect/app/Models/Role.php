@@ -13,6 +13,7 @@ class Role extends Model
 
     protected $table = 'roles';
     protected $timestamps = false;
+    
     protected $fillable = [
         'id',
         'nom',

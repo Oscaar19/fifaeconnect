@@ -29,9 +29,11 @@ class ManagerController extends Controller
         // Validar dades del formulari
         $validatedData = $request->validate([
             'usuari'        => 'required',
+            'titulacions'   => 'required|array',
         ]);
 
         $usuari = $request->get('usuari');
+        $usuari = $request->get('titulacions');
 
         $id_usuari=User::where('id_usuari', '=',$usuari)->first();
 
