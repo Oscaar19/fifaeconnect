@@ -19,6 +19,11 @@ class UserCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+    public function _construct()
+    {
+        $this->middleware('role:admin');
+    }
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      * 

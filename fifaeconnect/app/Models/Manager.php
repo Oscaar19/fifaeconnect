@@ -31,4 +31,15 @@ class Manager extends Model
         return $this->hasOne(Club::class);
     }
 
+    public function titulacions()
+    {
+        return $this->hasMany(Titulacio::class);
+    }
+
+    public function xarxes()
+    {
+        return $this->hasMany(Xarxa::class);
+    }
+
+
 }

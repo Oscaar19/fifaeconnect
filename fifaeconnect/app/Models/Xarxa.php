@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Titulacio extends Model
+class Xarxa extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
+
+    public function getKeyName(){
+        return "id_xarxa";
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -17,12 +21,12 @@ class Titulacio extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'descripcio',
-        'any_finalitzacio',
+        'twitter',
+        'linkedin',
     ];
 
-    public function managerFK()
+    public function userFK()
     {
-        return $this->belongsTo(Manager::class,'manager_id');
+        return $this->belongsTo(User::class,'id_usuari');
     }
 }

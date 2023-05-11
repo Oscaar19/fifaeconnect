@@ -20,6 +20,10 @@ use App\Http\Controllers\Api\TokenController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::middleware(['auth:sanctum'])->group(function () {
+    // ...
+
+});
 
 Route::apiResource('clubs', ClubController::class);
 

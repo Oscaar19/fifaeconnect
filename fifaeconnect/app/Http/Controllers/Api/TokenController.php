@@ -36,7 +36,7 @@ class TokenController extends Controller
             'password' => Hash::make($password),
         ]);
 
-        // $user->assignRole('author');
+        $user->assignRole('usuari');
 
         // Generate new token
         $token = $user->createToken("authToken")->plainTextToken;

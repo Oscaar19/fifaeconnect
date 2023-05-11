@@ -19,7 +19,12 @@ class Role extends Model
         'nom',
     ];
 
+    const USUARI = 'usuari';
+    const COACH = 'coach';
+    const MANAGER = 'manager';
+    const JUGADOR = 'jugador';
+
     public function usuaris(){
-        return $this->hasMany(Usuari::class,'id');
+        return $this->hasMany(Usuari::class,'id_usuari');
     }
 }

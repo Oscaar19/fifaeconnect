@@ -16,15 +16,20 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $moderadorRole = Role::create(['name' => 'moderador']);
+        $adminRole = Role::create(['name' => 'admin']);
+        $managerRole = Role::create(['name' => 'manager']);
+        $jugadorRole = Role::create(['name' => 'jugador']);
+        $coachRole = Role::create(['name' => 'coach']);
+        $usuariRole = Role::create(['name' => 'usuari']);
+  
 
         Permission::create(['name' => 'users.list']);
         Permission::create(['name' => 'users.delete']);
 
-        $moderadorRole->givePermissionTo(['users.list','users.delete']);
+        $adminRole->givePermissionTo(['users.list','users.delete']);
 
         $name  = config('admin.name');
         $admin = User::where('nom', $name)->first();
-        $admin->assignRole('moderador');
+        $admin->assignRole('admin');
     }
 }

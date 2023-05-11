@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Manager;
 use App\Models\User;
+use App\Models\Titulacio;
+use App\Models\Xarxa;
 
 class ManagerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('store','update','destroy');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,20 +37,42 @@ class ManagerController extends Controller
     {
         // Validar dades del formulari
         $validatedData = $request->validate([
-            'usuari'        => 'required',
             'titulacions'   => 'required|array',
+            'xarxes'        => 'required',
         ]);
 
-        $usuari = $request->get('usuari');
-        $usuari = $request->get('titulacions');
+        Log::debug("He validado los datos");
 
-        $id_usuari=User::where('id_usuari', '=',$usuari)->first();
+        $titulacions = $request->get('titulacions');
+        $xarxes = $request->get('xarxes');
 
-        if($id_usuari){
+        Log::debug($id_usuari);
+        Log::debug($titulacions);
+        Log::debug($xarxes);
+
+        $id_usuari = $request->user()->id;
+        $usuari=User::where('id_usuari', '=',$id_usuari)->first();
+
+        if($usuari){
             // Desar dades a BD
             $manager = Manager::create([
-                'usuari'   => $usuari,
+                'usuari'   => $id_usuari,
             ]);
+            $manager=Manager::where('usuari', '=',$id_usuari)->first();
+            foreach ($titulacions as $titulacio) {
+                Titulacio::create([
+                    'manager_id'        => $manager->id_manager,
+                    'descripcio'        => $titulacio->descripcio,
+                    'any_finalitzacio'  => $titulacio->any_finalitzacio,
+                ]);
+            }   
+            
+            Xarxa::create([
+                'twitter' => $xarxes->twitter,
+                'linkedin' => $xarxes->linkedin,
+            ]);
+
+            $usuari->assignRole('manager');
             // Patró PRG amb missatge d'èxit
             return response()->json([
                 'success' => true,

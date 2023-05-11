@@ -18,7 +18,8 @@ return new class extends Migration
                     ->references('id_usuari')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->string('link');
+            $table->string('twitter');
+            $table->string('linkedin');
         });
     }
 

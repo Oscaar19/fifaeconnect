@@ -18,6 +18,10 @@ return new class extends Migration
                     ->references('id_usuari')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
+            $table->unsignedBigInteger('club_actual')->nullable();
+            $table->foreign('club_actual')
+                    ->references('id_club')->on('clubs')
+                    ->onUpdate('cascade');
         });
     }
 
