@@ -101,6 +101,9 @@ class ManagerController extends Controller
     public function show(string $id)
     {
         $manager=User::find($id);
+        $foto=Foto::where('id', '=', $manager->foto_id)->first();
+        $titulacions=Titulacio::where('user_id', '=', $manager->id)->get();
+        
         if (!$manager){
             return response()->json([
                 'success' => false,
@@ -109,8 +112,10 @@ class ManagerController extends Controller
         }
         else{
             return response()->json([
-                'success' => true,
-                'data'    => $manager
+                'success'           => true,
+                'manager'           => $manager,
+                'foto'              => $foto,
+                'titulacions'       => $titulacions,
             ], 200);
        
         }
