@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assoliments', function (Blueprint $table) {
-            $table->id('id_assoliment');
-            $table->string('assoliment');
+            $table->id();
+            $table->string('descripcio');
             $table->year('any');
-            $table->unsignedBigInteger('jugador');
-            $table->foreign('jugador')
-                    ->references('id_jugador')->on('jugadors')
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                    ->references('id')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
         });

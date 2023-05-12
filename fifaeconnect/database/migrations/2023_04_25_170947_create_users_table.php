@@ -12,15 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('id_usuari');
+            $table->id();
             $table->string('nom');
             $table->string('cognom')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken()->nullable();
-            $table->string('foto')->nullable();
+            $table->unsignedBigInteger('foto_id')->nullable();
+            $table->foreign('foto_id')
+                    ->references('id')->on('fotos')
+                    ->onUpdate('cascade');
             $table->boolean('fa')->nullable();
-            
+            $table->unsignedBigInteger('club_id')->nullable();
+            $table->foreign('club_id')
+                    ->references('id')->on('clubs')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

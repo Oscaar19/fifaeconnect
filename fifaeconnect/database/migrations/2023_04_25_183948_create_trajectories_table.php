@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('trajectories', function (Blueprint $table) {
-            $table->id('id_trajectoria');
-            $table->unsignedBigInteger('id_jugador');
-            $table->foreign('id_jugador')
-                    ->references('id_jugador')->on('jugadors')
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                    ->references('id')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-            $table->unsignedBigInteger('club')->nullable();
-            $table->foreign('club')
-                    ->references('id_club')->on('clubs')
+            $table->unsignedBigInteger('club_id')->nullable();
+            $table->foreign('club_id')
+                    ->references('id')->on('clubs')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->year('any_inici');

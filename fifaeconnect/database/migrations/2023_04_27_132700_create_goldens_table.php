@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('goldens', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('id_valorador');            
             $table->foreign('id_valorador')
-                    ->references('id_usuari')->on('users')
+                    ->references('id')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->unsignedBigInteger('id_valorat');            
             $table->foreign('id_valorat')
-                    ->references('id_usuari')->on('users')
+                    ->references('id')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->unique(['id_valorador', 'id_valorat']);

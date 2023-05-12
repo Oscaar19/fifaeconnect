@@ -13,12 +13,6 @@ class Foto extends Model
 {
     use HasFactory;
 
-    //protected $primary_key = 'id_foto';
-
-    public function getKeyName(){
-        return "id_foto";
-    }
-
     protected $fillable = [
         'ruta',
         'tamany',
@@ -27,6 +21,11 @@ class Foto extends Model
     public function club()
     {
         return $this->hasOne(Club::class);
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
     }
 
     public function diskSave(UploadedFile $upload)

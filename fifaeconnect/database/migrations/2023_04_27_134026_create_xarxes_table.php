@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('xarxes', function (Blueprint $table) {
-            $table->id('id_xarxa');
-            $table->unsignedBigInteger('id_usuari');     
-            $table->foreign('id_usuari')
-                    ->references('id_usuari')->on('users')
+            $table->id();
+            $table->unsignedBigInteger('user_id');     
+            $table->foreign('user_id')
+                    ->references('id')->on('users')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             $table->string('twitter');

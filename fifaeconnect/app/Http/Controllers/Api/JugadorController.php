@@ -4,21 +4,29 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Jugador;
 use App\Models\User;
 use App\Models\Club;
+use App\Models\Titulacio;
+use App\Models\Xarxa;
 
 class JugadorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('store','update','destroy');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $jugadors = User::role('jugador')->get();
         return response()->json([
             'success' => true,
-            'data'    => Jugador::all()
+            'data'    => $jugadors
         ], 200);
     }
 
@@ -29,26 +37,47 @@ class JugadorController extends Controller
     {
         // Validar dades del formulari
         $validatedData = $request->validate([
-            'usuari'        => 'required',
-            'club_actual'   => 'required',
+            'fa'            => 'required',
+            'club'          => 'required',
+            'foto'          => 'required|mimes:gif,jpeg,jpg,png|max:2048',
+            'assoliments'   => 'array:descripcio,any',
         ]);
 
-        $usuari = $request->get('usuari');
-        $club   = $request->get('club_actual');
+        $fa          = $request->get('fa');
+        $club        = $request->get('club');
+        $upload      = $request->file('foto');
+        $assoliments = $request->get('assoliments');
 
-        $id_usuari=User::where('id_usuari', '=',$usuari)->first();
-        $id_club=Club::where('id_club', '=',$club)->first();
+        $foto = new Foto();
+        $fotoOk = $foto->diskSave($upload);
 
-        if($id_usuari && $id_club){
-            // Desar dades a BD
-            $jugador = Jugador::create([
-                'usuari'      => $usuari,
-                'club_actual' => $club,
+        $usuari=User::find(Auth::id());
+        $id_club=Club::find($club);
+
+        if($usuari && $id_club){
+            $usuari->removeRole('usuari');
+            $usuari->assignRole('jugador');
+            $usuari->foto_id = $foto->id;
+            $usuari->save();
+            foreach ($assoliments as $assoliment) {
+                \Log::debug($assoliment->descripcio);
+                Assoliment::create([
+                    'descripcio'        => $assoliment->descripcio,
+                    'any'               => $assoliment->any,
+                    'user_id'           => Auth::id(),
+                ]);
+            }   
+            Xarxa::create([
+                'user_id'  => Auth::id(),
+                'twitter'  => $twitter,
+                'linkedin' => $linkedin,
             ]);
+
+            
             // Patró PRG amb missatge d'èxit
             return response()->json([
                 'success' => true,
-                'data'    => $jugador
+                'data'    => $usuari
             ], 201);
         }else{
             return response()->json([
@@ -63,7 +92,7 @@ class JugadorController extends Controller
      */
     public function show(string $id)
     {
-        $jugador=Jugador::where('id_jugador', '=',$id)->first();
+        $jugador=User::find($id);
         if (!$jugador){
             return response()->json([
                 'success' => false,
@@ -97,6 +126,20 @@ class JugadorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $jugador=User::find($id);
+        if (!$jugador){
+            return response()->json([
+                'success' => false,
+                'message' => "Jugador no trobat"
+            ], 404);
+        }
+        else{
+            $jugador->delete();
+            return response()->json([
+                'success' => true,
+                'data'    => 'Jugador esborrat.'
+            ], 200);
+       
+        }
     }
 }

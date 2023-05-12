@@ -16,9 +16,6 @@ class User extends Authenticatable
 
     public $timestamps = false;
 
-    public function getKeyName(){
-        return "id_usuari";
-    }
 
     /**
      * The attributes that are mass assignable.
@@ -30,8 +27,9 @@ class User extends Authenticatable
         'cognom',
         'email',
         'password',
-        'foto',
+        'foto_id',
         'fa',
+        'club_id',
     ];
 
     /**
@@ -55,6 +53,16 @@ class User extends Authenticatable
 
     public function fotoFK()
     {
-        return $this->belongsTo(Foto::class,'foto');
+        return $this->belongsTo(Foto::class,'foto_id');
+    }
+
+    public function club()
+    {
+        return $this->belongsTo(Foto::class,'club_id');
+    }
+    
+    public function titulacions()
+    {
+        return $this->hasMany(Titulacio::class);
     }
 }

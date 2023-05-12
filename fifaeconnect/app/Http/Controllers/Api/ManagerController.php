@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-use App\Models\Manager;
 use App\Models\User;
 use App\Models\Titulacio;
 use App\Models\Xarxa;
+use App\Models\Foto;
 
 class ManagerController extends Controller
 {
@@ -24,9 +26,10 @@ class ManagerController extends Controller
      */
     public function index()
     {
+        $managers = User::role('manager')->get();
         return response()->json([
             'success' => true,
-            'data'    => Manager::all()
+            'data'    => $managers
         ], 200);
     }
 
@@ -37,51 +40,57 @@ class ManagerController extends Controller
     {
         // Validar dades del formulari
         $validatedData = $request->validate([
-            'titulacions'   => 'required|array',
-            'xarxes'        => 'required',
+            'twitter'         => 'string',
+            'linkedin'        => 'string',
+            'foto'            => 'required|mimes:gif,jpeg,jpg,png|max:2048',
+            'titulacions'     => 'required',
         ]);
 
         Log::debug("He validado los datos");
 
-        $titulacions = $request->get('titulacions');
-        $xarxes = $request->get('xarxes');
 
-        Log::debug($id_usuari);
-        Log::debug($titulacions);
-        Log::debug($xarxes);
+        $titulacionsStr = $request->get('titulacions');
+        $titulacions = json_decode($titulacionsStr,true);
 
-        $id_usuari = $request->user()->id;
-        $usuari=User::where('id_usuari', '=',$id_usuari)->first();
 
-        if($usuari){
-            // Desar dades a BD
-            $manager = Manager::create([
-                'usuari'   => $id_usuari,
-            ]);
-            $manager=Manager::where('usuari', '=',$id_usuari)->first();
+        $upload      = $request->file('foto');
+        $twitter     = $request->get('twitter');
+        $linkedin    = $request->get('linkedin');
+
+        $foto = new Foto();
+        $fotoOk = $foto->diskSave($upload);
+
+        $usuari=User::find(Auth::id());
+
+        if($usuari && $fotoOk){
+            $usuari->removeRole('usuari');
+            $usuari->assignRole('manager');
+            $usuari->foto_id = $foto->id;
+            $usuari->save();
             foreach ($titulacions as $titulacio) {
                 Titulacio::create([
-                    'manager_id'        => $manager->id_manager,
-                    'descripcio'        => $titulacio->descripcio,
-                    'any_finalitzacio'  => $titulacio->any_finalitzacio,
+                    'user_id'           => Auth::id(),
+                    'descripcio'        => $titulacio["descripcio"],
+                    'any_finalitzacio'  => $titulacio["any_finalitzacio"],
                 ]);
             }   
-            
+            \Log::debug("He creado las titulaciones");
             Xarxa::create([
-                'twitter' => $xarxes->twitter,
-                'linkedin' => $xarxes->linkedin,
+                'user_id'  => Auth::id(),
+                'twitter'  => $twitter,
+                'linkedin' => $linkedin,
             ]);
 
-            $usuari->assignRole('manager');
+            
             // Patró PRG amb missatge d'èxit
             return response()->json([
                 'success' => true,
-                'data'    => $manager
+                'data'    => $usuari
             ], 201);
         }else{
             return response()->json([
                 'success' => false,
-                'message' => "User not found"
+                'message' => "Error."
             ], 404);
         }
     }
@@ -91,7 +100,7 @@ class ManagerController extends Controller
      */
     public function show(string $id)
     {
-        $manager=Manager::where('id_manager', '=',$id)->first();
+        $manager=User::find($id);
         if (!$manager){
             return response()->json([
                 'success' => false,
@@ -112,24 +121,49 @@ class ManagerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $manager=Manager::where('id_manager', '=',$id)->first();
+        $manager=User::find($id);
 
         if ($manager){
             // Validar dades del formulari
             $validatedData = $request->validate([
-                'usuari'     => 'required',
+                'twitter'         => 'string',
+                'linkedin'        => 'string',
+                'foto'            => 'required|mimes:gif,jpeg,jpg,png|max:2048',
+                'titulacions'     => 'array:descripcio,any_finalitzacio',
             ]);
-            
-            // Obtenir dades del formulari
-            $usuari = $request->get('usuari');         
 
-            $manager->usuari = $usuari;
-            $manager->save();
-            // Patró PRG amb missatge d'èxit
-            return response()->json([
-                'success' => true,
-                'data'    => $manager
-            ], 201);             
+            Log::debug("He validado los datos");
+
+
+            $titulacions = $request->get('titulacions');
+            $upload      = $request->file('foto');
+            $twitter     = $request->get('twitter');
+            $linkedin    = $request->get('linkedin');     
+            
+            $foto=Foto::find($manager->foto_id);
+            $fileOk = $foto->diskSave($upload);
+            
+            if($fotoOk){
+                $xarxes = DB::table('xarxes')->where('user_id', $manager->id)->get();
+                $xarxes->twitter = $twitter;
+                $xarxes->linkedin = $linkedin;
+                $xarxes->save();
+
+                foreach ($titulacions as $titulacio) {
+                    \Log::debug($titulacio->descripcio);
+                    Titulacio::create([
+                        'user_id'           => Auth::id(),
+                        'descripcio'        => $titulacio->descripcio,
+                        'any_finalitzacio'  => $titulacio->any_finalitzacio,
+                    ]);
+                }  
+                // Patró PRG amb missatge d'èxit
+                return response()->json([
+                    'success' => true,
+                    'data'    => $manager
+                ], 201);
+
+            }             
         } else {
             return response()->json([
                 'success' => false,

@@ -26,6 +26,11 @@ class Manager extends Model
         'usuari',
     ];
 
+    public function usuariFK()
+    {
+        return $this->belongsTo(User::class,'usuari');
+    }
+
     public function club()
     {
         return $this->hasOne(Club::class);

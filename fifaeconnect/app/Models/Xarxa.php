@@ -11,9 +11,7 @@ class Xarxa extends Model
 
     public $timestamps = false;
 
-    public function getKeyName(){
-        return "id_xarxa";
-    }
+    protected $table = 'xarxes';
 
     /**
      * The attributes that are mass assignable.
@@ -21,12 +19,13 @@ class Xarxa extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'twitter',
         'linkedin',
     ];
 
-    public function userFK()
+    public function user()
     {
-        return $this->belongsTo(User::class,'id_usuari');
+        return $this->belongsTo(User::class,'user_id');
     }
 }
