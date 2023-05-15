@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Titulacio::class);
     }
+
+    public function goldens()
+    {
+        return $this->belongsToMany(Golden::class);
+    }
 }

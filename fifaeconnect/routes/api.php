@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ManagerController;
 use App\Http\Controllers\Api\FotoController;
 use App\Http\Controllers\Api\JugadorController;
 use App\Http\Controllers\Api\TokenController;
+use App\Http\Controllers\Api\GoldenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,11 @@ Route::apiResource('clubs', ClubController::class);
 Route::post('clubs/{club}', [ClubController::class, 'update_workaround']);
 
 Route::apiResource('users', UsuariController::class);
+
+Route::apiResource('goldens', GoldenController::class);
+
+Route::post('/users/{user}/goldens', [UsuariController::class, 'golden']);
+Route::delete('/users/{user}/goldens', [UsuariController::class, 'ungolden']);
 
 Route::apiResource('managers', ManagerController::class);
 

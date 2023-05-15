@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Titulacio;
 use App\Models\Xarxa;
 use App\Models\Foto;
+use App\Models\Golden;
 
 class ManagerController extends Controller
 {
@@ -103,6 +104,7 @@ class ManagerController extends Controller
         $manager=User::find($id);
         $foto=Foto::where('id', '=', $manager->foto_id)->first();
         $titulacions=Titulacio::where('user_id', '=', $manager->id)->get();
+        $xarxes=Xarxa::where('user_id', '=', $manager->id)->first();
         
         if (!$manager){
             return response()->json([
@@ -116,6 +118,7 @@ class ManagerController extends Controller
                 'manager'           => $manager,
                 'foto'              => $foto,
                 'titulacions'       => $titulacions,
+                'xarxes'            => $xarxes,
             ], 200);
        
         }
@@ -197,6 +200,60 @@ class ManagerController extends Controller
                 'data'    => 'Manager esborrat.'
             ], 200);
        
+        }
+    }
+
+    /**
+     * Add golden
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function golden($id) 
+    {
+        try {
+            $golden = Golden::create([
+                'id_valorador'  => auth()->user()->id,
+                'id_valorat' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Golden already exists"
+            ], 500); 
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data'    => $golden
+        ], 200);
+    }
+
+    /**
+     * Undo favorite
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function ungolden($id)
+    {
+        $golden = Golden::where([
+            ['id_valorador', '=', auth()->user()->id],
+            ['id_valorat', '=', $id],
+        ])->first();
+
+        if ($golden) {
+            $golden->delete();
+            return response()->json([
+                'success' => true,
+                'data'    => $golden
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => "Golden not exists"
+            ], 404); 
         }
     }
 }

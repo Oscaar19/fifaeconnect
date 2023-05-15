@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('goldens', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_valorador');            
+            $table->unsignedBigInteger('id_valorador');             
             $table->foreign('id_valorador')
                     ->references('id')->on('users')
                     ->onUpdate('cascade')

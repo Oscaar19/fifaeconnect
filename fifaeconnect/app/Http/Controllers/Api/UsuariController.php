@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\Foto;
 use App\Models\User;
+use App\Models\Golden;
 
 class UsuariController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('golden','ungolden');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -180,6 +188,60 @@ class UsuariController extends Controller
                 'data'    => 'Usuari esborrat.'
             ], 200);
        
+        }
+    }
+
+    /**
+     * Add golden
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function golden($id) 
+    {
+        try {
+            $golden = Golden::create([
+                'id_valorador'  => Auth::id(),
+                'id_valorat' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Golden already exists"
+            ], 500); 
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data'    => $golden
+        ], 200);
+    }
+
+    /**
+     * Undo favorite
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function ungolden($id)
+    {
+        $golden = Golden::where([
+            ['id_valorador', '=', Auth::id()],
+            ['id_valorat', '=', $id],
+        ])->first();
+
+        if ($golden) {
+            $golden->delete();
+            return response()->json([
+                'success' => true,
+                'data'    => $golden
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => "Golden not exists"
+            ], 404); 
         }
     }
 }
