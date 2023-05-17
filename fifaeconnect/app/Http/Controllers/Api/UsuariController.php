@@ -18,7 +18,7 @@ class UsuariController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->only('golden','ungolden');
+        $this->middleware('auth:sanctum')->only('golden','ungolden','listGoldens');
     }
     /**
      * Display a listing of the resource.
@@ -87,7 +87,9 @@ class UsuariController extends Controller
      */
     public function show($id)
     {
-        $user=User::where('id_usuari', '=',$id)->first();
+        $user=User::find($id);
+        $foto=Foto::where('id', '=', $user->foto_id)->first();
+        $roles = $user->getRoleNames();
         if (!$user){
             return response()->json([
                 'success' => false,
@@ -97,7 +99,8 @@ class UsuariController extends Controller
         else{
             return response()->json([
                 'success' => true,
-                'data'    => $user
+                'data'    => $user,
+                'foto'    => $foto
             ], 200);
        
         }
@@ -244,4 +247,5 @@ class UsuariController extends Controller
             ], 404); 
         }
     }
+    
 }

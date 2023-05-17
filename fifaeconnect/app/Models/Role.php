@@ -24,7 +24,7 @@ class Role extends Model
     const MANAGER = 'manager';
     const JUGADOR = 'jugador';
 
-    public function usuaris(){
-        return $this->hasMany(Usuari::class,'id_usuari');
+    public function users(){
+        return $this->hasMany(User::class);
     }
 }

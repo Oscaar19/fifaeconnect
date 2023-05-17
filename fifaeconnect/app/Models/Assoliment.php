@@ -11,12 +11,15 @@ class Assoliment extends Model
 
     public $timestamps = false;
 
+    protected $table = 'assoliments';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'descripcio',
         'any',
     ];

@@ -8,12 +8,19 @@ use Illuminate\Http\Request;
 use Debugbar;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
+use App\Models\User;
 use App\Models\Foto;
 use App\Models\Club;
 
 class ClubController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('store','update','destroy');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -35,25 +42,27 @@ class ClubController extends Controller
         $validatedData = $request->validate([
             'nom'       => 'required|string',
             'foto'      => 'required|mimes:gif,jpeg,jpg,png,mp4|max:2048',
-            'manager'   => 'required',
         ]);
 
         Log::debug("He validado los datos");
         // Obtenir dades del formulari
         $nom        = $request->get('nom');
-        $manager    = $request->get('manager');
         $upload     = $request->file('foto');
 
         $foto = new Foto();
         $fotoOk = $foto->diskSave($upload);
-
+        Log::debug("He validado los datos");
         if ($fotoOk) {
             // Desar dades a BD
             $club = Club::create([
                 'nom'        => $nom,
-                'foto'       => $foto->id_foto,
-                'manager'    => $manager,
+                'foto_id'    => $foto->id,
             ]);
+            Log::debug("He añadido el club");
+            $manager=User::find(Auth::id());
+            $manager->club_id = $club->id;
+            $manager->fa      = false;
+            $manager->save();
             // Patró PRG amb missatge d'èxit
             return response()->json([
                 'success' => true,
@@ -72,7 +81,18 @@ class ClubController extends Controller
      */
     public function show($id)
     {
+        Log::debug("Hola");
         $club=Club::where('id_club', '=',$id)->first();
+        $manager = User::role('manager')->where('club_id', '=',$id)->first();
+        Log::debug("Este es el manager");
+        Log::debug($manager);
+        $jugadors = User::role('jugador')->where('club_id', '=',$id)->get();
+        Log::debug("Estos son los jugadores");
+        Log::debug($jugadors);
+        $coaches = User::role('coach')->where('club_id', '=',$id)->get();
+        Log::debug("Estos son los coaches");
+        Log::debug($coaches); 
+
         if (!$club){
             return response()->json([
                 'success' => false,
@@ -81,8 +101,11 @@ class ClubController extends Controller
         }
         else{
             return response()->json([
-                'success' => true,
-                'data'    => $club
+                'success'    => true,
+                'data'       => $club,
+                'manager'    => $manager,
+                'jugadors'   => $jugadors,
+                'coaches'    => $coaches
             ], 200);
        
         }

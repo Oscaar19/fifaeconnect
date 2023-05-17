@@ -50,11 +50,11 @@ class TokenController extends Controller
 
     public function user(Request $request)
     {
-        $user = User::where('email', $request->user()->email)->first();
+        $user = User::find($request->user()->id);
         
         return response()->json([
             "success" => true,
-            "user"    => $request->user(),
+            "user"    => $user,
             "roles"   => $user->getRoleNames(),
         ]);
     }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\FotoController;
 use App\Http\Controllers\Api\JugadorController;
 use App\Http\Controllers\Api\TokenController;
 use App\Http\Controllers\Api\GoldenController;
+use App\Http\Controllers\Api\CoachController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +22,14 @@ use App\Http\Controllers\Api\GoldenController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::middleware(['auth:sanctum'])->group(function () {
-    // ...
-
-});
 
 Route::apiResource('clubs', ClubController::class);
 
+Route::get('/coaches/freeagents', [CoachController::class, 'coachesFA']);
+Route::apiResource('coaches', CoachController::class);
+
 Route::post('clubs/{club}', [ClubController::class, 'update_workaround']);
+
 
 Route::apiResource('users', UsuariController::class);
 
@@ -37,10 +38,12 @@ Route::apiResource('goldens', GoldenController::class);
 Route::post('/users/{user}/goldens', [UsuariController::class, 'golden']);
 Route::delete('/users/{user}/goldens', [UsuariController::class, 'ungolden']);
 
+Route::get('/managers/freeagents', [ManagerController::class, 'managersFA']);
 Route::apiResource('managers', ManagerController::class);
 
 Route::apiResource('fotos', FotoController::class);
 
+Route::get('/jugadors/freeagents', [JugadorController::class, 'jugadorsFA']);
 Route::apiResource('jugadors', JugadorController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

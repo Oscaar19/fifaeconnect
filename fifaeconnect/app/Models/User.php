@@ -51,9 +51,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function fotoFK()
+    public function foto()
     {
-        return $this->belongsTo(Foto::class,'foto_id');
+        return $this->belongsTo(Foto::class);
     }
 
     public function club()

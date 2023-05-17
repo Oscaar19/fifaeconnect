@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Jugador;
 use App\Models\User;
-use App\Models\Club;
-use App\Models\Assoliment;
+use App\Models\Experiencia;
 use App\Models\Xarxa;
 use App\Models\Foto;
 
-class JugadorController extends Controller
+class CoachController extends Controller
 {
     public function __construct()
     {
@@ -26,10 +24,10 @@ class JugadorController extends Controller
      */
     public function index()
     {
-        $jugadors = User::role('jugador')->get();
+        $coaches = User::role('coach')->get();
         return response()->json([
             'success' => true,
-            'data'    => $jugadors
+            'data'    => $coaches
         ], 200);
     }
 
@@ -44,15 +42,15 @@ class JugadorController extends Controller
             'linkedin'        => 'string',
             'foto'            => 'required|mimes:gif,jpeg,jpg,png|max:2048',
             'fa'              => 'boolean',
-            'club_id'         => 'nullable',
-            'assoliments'     => 'required',
+            'club_id'         => 'string',
+            'experiencies'    => 'required',
         ]);
 
         Log::debug("He validado los datos");
 
 
-        $assolimentsStr = $request->get('assoliments');
-        $assoliments = json_decode($assolimentsStr,true);
+        $experienciesStr = $request->get('experiencies');
+        $experiencies = json_decode($experienciesStr,true);
 
 
         $upload      = $request->file('foto');
@@ -68,18 +66,18 @@ class JugadorController extends Controller
 
         if($usuari && $fotoOk){
             $usuari->removeRole('usuari');
-            $usuari->assignRole('jugador');
+            $usuari->assignRole('coach');
             $usuari->foto_id = $foto->id;
             $usuari->club_id = $club_id;
             $usuari->fa      = $fa;
             $usuari->save();
-            foreach ($assoliments as $assoliment) {
-                Assoliment::create([
-                    'descripcio'        => $assoliment["descripcio"],
-                    'any'               => $assoliment["any"],
+            foreach ($experiencies as $experiencia) {
+                Experiencia::create([
                     'user_id'           => Auth::id(),
+                    'descripcio'        => $experiencia["descripcio"],
                 ]);
             }   
+            \Log::debug("He creado las experiencias");
             Xarxa::create([
                 'user_id'  => Auth::id(),
                 'twitter'  => $twitter,
@@ -95,7 +93,7 @@ class JugadorController extends Controller
         }else{
             return response()->json([
                 'success' => false,
-                'message' => "User or Club not found"
+                'message' => "Error."
             ], 404);
         }
     }
@@ -105,70 +103,35 @@ class JugadorController extends Controller
      */
     public function show(string $id)
     {
-        $jugador=User::find($id);
-        $foto=Foto::where('id', '=', $jugador->foto_id)->first();
-        $assoliments=Assoliment::where('user_id', '=', $jugador->id)->get();
-        $xarxes=Xarxa::where('user_id', '=', $jugador->id)->first();
+        $coach=User::find($id);
+        $foto=Foto::where('id', '=', $coach->foto_id)->first();
+        $experiencies=Experiencia::where('user_id', '=', $coach->id)->get();
+        $xarxes=Xarxa::where('user_id', '=', $coach->id)->first();
         
-        if (!$jugador){
+        if (!$coach){
             return response()->json([
                 'success' => false,
-                'message' => "Jugador not found"
+                'message' => "Coach not found"
             ], 404);
         }
         else{
             return response()->json([
                 'success'           => true,
-                'jugador'           => $jugador,
+                'coach'             => $coach,
                 'foto'              => $foto,
-                'assoliments'       => $assoliments,
+                'experiencies'      => $experiencies,
                 'xarxes'            => $xarxes,
             ], 200);
        
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function coachesFA()
     {
-        //
-    }
-
-    public function update_workaround(Request $request, $id)
-    {
-        return $this->update($request, $id);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $jugador=User::find($id);
-        if (!$jugador){
-            return response()->json([
-                'success' => false,
-                'message' => "Jugador no trobat"
-            ], 404);
-        }
-        else{
-            $jugador->delete();
-            return response()->json([
-                'success' => true,
-                'data'    => 'Jugador esborrat.'
-            ], 200);
-       
-        }
-    }
-
-    public function jugadorsFA()
-    {
-        $jugadors=User::role('jugador')->where('fa', '=', true)->get();
+        $coaches=User::role('coach')->where('fa', '=', true)->get();
         return response()->json([
             'success' => true,
-            'data'    => $jugadors
+            'data'    => $coaches
         ], 200);
     }
 }

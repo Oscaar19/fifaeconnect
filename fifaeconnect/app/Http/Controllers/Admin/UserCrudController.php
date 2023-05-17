@@ -48,7 +48,6 @@ class UserCrudController extends CrudController
         CRUD::column('cognom');
         CRUD::column('email');
         CRUD::column('password');
-        CRUD::column('foto');
         CRUD::column('fa');
 
         /**
@@ -72,7 +71,6 @@ class UserCrudController extends CrudController
         CRUD::field('cognom');
         CRUD::field('email');
         CRUD::field('password');
-        CRUD::field('foto');
         CRUD::field('fa');
 
         /**

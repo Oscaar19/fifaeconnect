@@ -13,24 +13,14 @@ class Club extends Model
 
     public $timestamps = false;
 
-    public function getKeyName(){
-        return "id_club";
-    }
-
     protected $fillable = [
         'nom',
-        'foto',
-        'manager',
+        'foto_id',
     ];
-
-    public function user()
-    {
-        return $this->hasMany(User::class);
-    }
 
     public function fotoFK()
     {
-        return $this->belongsTo(Foto::class,'foto');
+        return $this->belongsTo(Foto::class,'foto_id');
     }
 
     public function managerFK()

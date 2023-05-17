@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Jugador extends Model
+class Experiencia extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
+
+    protected $table = 'experiencies';
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +19,12 @@ class Jugador extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'usuari',
-        'club_actual',
+        'user_id',
+        'descripcio',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

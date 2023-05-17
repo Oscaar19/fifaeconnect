@@ -46,7 +46,6 @@ class ClubCrudController extends CrudController
     {
         CRUD::column('nom');
         CRUD::column('foto');
-        CRUD::column('manager');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -67,7 +66,6 @@ class ClubCrudController extends CrudController
 
         CRUD::field('nom');
         CRUD::field('foto');
-        CRUD::field('manager');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

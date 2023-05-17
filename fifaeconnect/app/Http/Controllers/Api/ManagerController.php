@@ -67,6 +67,7 @@ class ManagerController extends Controller
             $usuari->removeRole('usuari');
             $usuari->assignRole('manager');
             $usuari->foto_id = $foto->id;
+            $usuari->fa      = true;
             $usuari->save();
             foreach ($titulacions as $titulacio) {
                 Titulacio::create([
@@ -203,57 +204,12 @@ class ManagerController extends Controller
         }
     }
 
-    /**
-     * Add golden
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function golden($id) 
+    public function managersFA()
     {
-        try {
-            $golden = Golden::create([
-                'id_valorador'  => auth()->user()->id,
-                'id_valorat' => $id
-            ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            Log::error($e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => "Golden already exists"
-            ], 500); 
-        }
-        
+        $managers=User::role('manager')->where('fa', '=', true)->get();
         return response()->json([
             'success' => true,
-            'data'    => $golden
+            'data'    => $managers
         ], 200);
-    }
-
-    /**
-     * Undo favorite
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function ungolden($id)
-    {
-        $golden = Golden::where([
-            ['id_valorador', '=', auth()->user()->id],
-            ['id_valorat', '=', $id],
-        ])->first();
-
-        if ($golden) {
-            $golden->delete();
-            return response()->json([
-                'success' => true,
-                'data'    => $golden
-            ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => "Golden not exists"
-            ], 404); 
-        }
     }
 }
