@@ -11,6 +11,5 @@
     </ul>
 </li>
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i class="nav-icon la la-question"></i> Users</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('manager') }}"><i class="nav-icon la la-question"></i> Managers</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('club') }}"><i class="nav-icon la la-question"></i> Clubs</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i class="las la-user"></i></i> Users</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('club') }}"><i class="las la-gamepad"></i> Clubs</a></li>
