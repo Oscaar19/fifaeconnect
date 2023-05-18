@@ -26,6 +26,7 @@ class ClubController extends Controller
      */
     public function index()
     {
+        Log::debug("Hola index");
         return response()->json([
             'success' => true,
             'data'    => Club::all()
@@ -81,17 +82,11 @@ class ClubController extends Controller
      */
     public function show($id)
     {
-        Log::debug("Hola");
-        $club=Club::where('id_club', '=',$id)->first();
+        $club=Club::find($id);
         $manager = User::role('manager')->where('club_id', '=',$id)->first();
-        Log::debug("Este es el manager");
-        Log::debug($manager);
         $jugadors = User::role('jugador')->where('club_id', '=',$id)->get();
-        Log::debug("Estos son los jugadores");
-        Log::debug($jugadors);
         $coaches = User::role('coach')->where('club_id', '=',$id)->get();
-        Log::debug("Estos son los coaches");
-        Log::debug($coaches); 
+        $foto=Foto::where('id', '=', $club->foto_id)->first();
 
         if (!$club){
             return response()->json([
@@ -102,10 +97,11 @@ class ClubController extends Controller
         else{
             return response()->json([
                 'success'    => true,
-                'data'       => $club,
+                'club'       => $club,
                 'manager'    => $manager,
                 'jugadors'   => $jugadors,
-                'coaches'    => $coaches
+                'coaches'    => $coaches,
+                'foto'       => $foto
             ], 200);
        
         }
